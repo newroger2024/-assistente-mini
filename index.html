@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assistente Mini</title>
+</head>
+<body>
+  <h1>Olá! Eu sou o Mini, seu assistente de bordo.</h1>
+  <p>Diga "Mini" seguido de um comando para começar.</p>
+
+  <script>
+    const comandos = {
+      "bom dia": "Bom dia! Desejo uma ótima corrida pra você.",
+      "boa tarde": "Boa tarde! Seja bem-vindo ao carro do Rogério.",
+      "boa noite": "Boa noite! Fique à vontade, sua segurança é prioridade.",
+      "qual o pix": "O pix do Rogério é 02201883947. Deseja ver o QR Code?",
+      "obrigado": "Eu que agradeço. O Rogério está sempre à disposição.",
+      "quem é você": "Eu sou o Mini, assistente de bordo do Rogério.",
+    };
+
+    const fala = (mensagem) => {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(mensagem);
+      utter.lang = "pt-BR";
+      utter.rate = 1;
+      synth.speak(utter);
+    };
+
+    const escutar = () => {
+      const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      rec.lang = "pt-BR";
+      rec.continuous = false;
+      rec.onresult = (event) => {
+        const texto = event.results[0][0].transcript.toLowerCase();
+        console.log("Você disse:", texto);
+        if (texto.includes("mini")) {
+          const comando = Object.keys(comandos).find(chave => texto.includes(chave));
+          if (comando) {
+            fala(comandos[comando]);
+          } else {
+            fala("Desculpe, não entendi o comando.");
+          }
+        }
+      };
+      rec.start();
+    };
+
+    document.body.addEventListener("click", escutar);
+  </script>
+</body>
+</html>
